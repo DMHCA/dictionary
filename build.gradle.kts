@@ -25,10 +25,21 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.postgresql:postgresql:42.7.6")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testCompileOnly("org.projectlombok:lombok")
+	testAnnotationProcessor("org.projectlombok:lombok")
+
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(group = "org.mockito", module = "mockito-core")
+	}
+	testImplementation("org.mockito:mockito-junit-jupiter:5.10.0")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation ("com.h2database:h2")
 }
 
 tasks.withType<Test> {
