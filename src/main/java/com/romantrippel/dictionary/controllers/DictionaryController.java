@@ -35,5 +35,4 @@ public class DictionaryController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedDto);
     }
-
 }

@@ -1,1 +1,1 @@
-# A pet project for storing and improving vocabulary
+# A pet project for storing and improving vocabulary 
