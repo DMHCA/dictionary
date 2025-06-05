@@ -7,8 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
+@Getter
+@Setter
 @Entity
-@Data
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -23,6 +25,6 @@ public class DictionaryRecord {
     private String translation;
 
     public DictionaryRecordDto toDto() {
-        return new DictionaryRecordDto(this.word, this.translation);
+        return new DictionaryRecordDto(this.id, this.word, this.translation);
     }
 }

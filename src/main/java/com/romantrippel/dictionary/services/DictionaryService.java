@@ -18,18 +18,30 @@ public class DictionaryService {
     }
 
     public DictionaryRecordDto findRecordByWord(String word) {
-
         return dictionaryRepository.findByWord(word)
                 .orElseThrow(() -> new EntityNotFoundException("Word not found: " + word))
                 .toDto();
     }
 
     public List<DictionaryRecordDto> getRecords() {
-        List<DictionaryRecord> records = dictionaryRepository.findAll();
-        return records.stream().map(DictionaryRecord::toDto).toList();
+        return dictionaryRepository.findAll()
+                .stream()
+                .map(DictionaryRecord::toDto)
+                .toList();
     }
 
-    public DictionaryRecordDto createRecord(DictionaryRecordDto dictionaryRecordDto) {
-        return dictionaryRepository.save(dictionaryRecordDto.toEntity()).toDto();
+    public DictionaryRecordDto createRecord(DictionaryRecordDto dto) {
+        // TODO: add additional validation if the service is called outside the controller
+        var entity = toEntity(dto);
+        var saved = dictionaryRepository.save(entity);
+        return toDto(saved);
+    }
+
+    private DictionaryRecordDto toDto(DictionaryRecord entity) {
+        return entity.toDto();
+    }
+
+    private DictionaryRecord toEntity(DictionaryRecordDto dto) {
+        return dto.toEntity();
     }
 }

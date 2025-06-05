@@ -22,8 +22,8 @@ class DictionaryServiceTest {
     @Test
     @DisplayName("findRecordByWord() returns DTO when word is found")
     void shouldReturnDtoWhenWordIsFound() {
-        var record = new DictionaryRecord("hello", "привет");
-        when(repository.findByWord("hello")).thenReturn(Optional.of(record));
+        var entity = new DictionaryRecord("hello", "привет");
+        when(repository.findByWord("hello")).thenReturn(Optional.of(entity));
 
         var result = service.findRecordByWord("hello");
 
@@ -44,27 +44,28 @@ class DictionaryServiceTest {
     @Test
     @DisplayName("getRecords() returns list of DTOs from repository")
     void shouldReturnAllRecords() {
-        var list = List.of(
+        var entities = List.of(
                 new DictionaryRecord("cat", "кот"),
                 new DictionaryRecord("dog", "пёс")
         );
-        when(repository.findAll()).thenReturn(list);
+        when(repository.findAll()).thenReturn(entities);
 
         var result = service.getRecords();
 
         assertThat(result).hasSize(2);
         assertThat(result.get(0).word()).isEqualTo("cat");
+        assertThat(result.get(0).translation()).isEqualTo("кот");
         assertThat(result.get(1).word()).isEqualTo("dog");
+        assertThat(result.get(1).translation()).isEqualTo("пёс");
     }
 
     @Test
     @DisplayName("createRecord() saves entity and returns DTO")
     void shouldSaveAndReturnDto() {
-        var dto = new DictionaryRecordDto("sun", "солнце");
-        var entity = dto.toEntity();
-        var saved = new DictionaryRecord("sun", "солнце");
+        var dto = new DictionaryRecordDto(6L, "sun", "солнце");
 
-        when(repository.save(entity)).thenReturn(saved);
+        var expectedSavedEntity = new DictionaryRecord(6L, "sun", "солнце");
+        when(repository.save(any(DictionaryRecord.class))).thenReturn(expectedSavedEntity);
 
         var result = service.createRecord(dto);
 
