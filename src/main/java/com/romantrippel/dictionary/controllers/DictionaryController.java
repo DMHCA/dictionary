@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -19,6 +22,15 @@ public class DictionaryController {
     private static final Logger logger = LoggerFactory.getLogger(DictionaryController.class);
 
     private final DictionaryService dictionaryService;
+
+    @GetMapping("/page")
+    public Page<DictionaryRecordDto> getRecordsPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return dictionaryService.getRecords(pageable);
+    }
 
     @GetMapping("/{word}")
     public ResponseEntity<DictionaryRecordDto> getRecordByWord(@PathVariable String word) {

@@ -5,6 +5,8 @@ import com.romantrippel.dictionary.entity.DictionaryRecord;
 import com.romantrippel.dictionary.repositories.DictionaryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -22,6 +24,12 @@ public class DictionaryService {
                 .orElseThrow(() -> new EntityNotFoundException("Word not found: " + word))
                 .toDto();
     }
+
+    public Page<DictionaryRecordDto> getRecords(Pageable pageable) {
+        return dictionaryRepository.findAll(pageable)
+                .map(this::toDto);
+    }
+
 
     public List<DictionaryRecordDto> getRecords() {
         return dictionaryRepository.findAll()
