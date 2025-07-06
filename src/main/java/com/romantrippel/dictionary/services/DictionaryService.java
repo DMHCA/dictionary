@@ -3,56 +3,46 @@ package com.romantrippel.dictionary.services;
 import com.romantrippel.dictionary.dto.DictionaryRecordDto;
 import com.romantrippel.dictionary.entity.DictionaryRecord;
 import com.romantrippel.dictionary.repositories.DictionaryRepository;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DictionaryService {
 
-    private final DictionaryRepository dictionaryRepository;
+    private final DictionaryRepository repository;
 
-    public Page<DictionaryRecordDto> searchRecordsByWord(String word, Pageable pageable) {
-        return dictionaryRepository.searchByWord(word, pageable)
-                .map(DictionaryRecord::toDto);
+    public Page<DictionaryRecordDto> findFiltered(
+            String word,
+            String level,
+            String pos,
+            Boolean learned,
+            Pageable pageable
+    ) {
+        List<DictionaryRecordDto> all = repository.findAll()
+                .stream()
+                .map(DictionaryRecord::toDto)    // вот тут исправление
+                .filter(record -> word == null || record.word().toLowerCase().contains(word.toLowerCase()))
+                .filter(record -> level == null || level.equalsIgnoreCase(record.level()))
+                .filter(record -> pos == null || pos.equalsIgnoreCase(record.pos()))
+                .filter(record -> learned == null || learned.equals(record.learned()))
+                .toList();
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), all.size());
+
+        List<DictionaryRecordDto> content = (start >= end) ? List.of() : all.subList(start, end);
+
+        return new PageImpl<>(content, pageable, all.size());
     }
-
-    public DictionaryRecordDto findRecordByWord(String word) {
-        return dictionaryRepository.findByWord(word)
-                .orElseThrow(() -> new EntityNotFoundException("Word not found: " + word))
-                .toDto();
-    }
-
-    public Page<DictionaryRecordDto> getRecords(Pageable pageable) {
-        return dictionaryRepository.findAll(pageable)
-                .map(this::toDto);
-    }
-
 
     public List<DictionaryRecordDto> getRecords() {
-        return dictionaryRepository.findAll()
+        return repository.findAll()
                 .stream()
-                .map(DictionaryRecord::toDto)
+                .map(DictionaryRecord::toDto)   // тоже исправлено
                 .toList();
-    }
-
-    public DictionaryRecordDto createRecord(DictionaryRecordDto dto) {
-        // TODO: add additional validation if the service is called outside the controller
-        var entity = toEntity(dto);
-        var saved = dictionaryRepository.save(entity);
-        return toDto(saved);
-    }
-
-    private DictionaryRecordDto toDto(DictionaryRecord entity) {
-        return entity.toDto();
-    }
-
-    private DictionaryRecord toEntity(DictionaryRecordDto dto) {
-        return dto.toEntity();
     }
 }

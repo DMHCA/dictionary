@@ -1,6 +1,5 @@
 package com.romantrippel.dictionary.dto;
 
-import com.romantrippel.dictionary.entity.DictionaryRecord;
 import jakarta.validation.constraints.NotBlank;
 
 public record DictionaryRecordDto(Long id,
@@ -11,8 +10,4 @@ public record DictionaryRecordDto(Long id,
                                   String pos,
                                   boolean learned
                                   ) {
-
-    public DictionaryRecord toEntity() {
-        return new DictionaryRecord(id, level, word, translation, usAudioUrl, pos, learned);
-    }
 }
