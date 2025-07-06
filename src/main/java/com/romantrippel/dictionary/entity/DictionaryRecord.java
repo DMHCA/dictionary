@@ -33,8 +33,22 @@ public class DictionaryRecord {
 
     private boolean learned = false;
 
+    private static final String OXFORD_BASE_URL = "https://www.oxfordlearnersdictionaries.com";
+
     public DictionaryRecordDto toDto() {
-        return new DictionaryRecordDto(this.id, this.word, this.level, this.translation, this.usAudioUrl, this.pos, this.learned);
+        String fullAudioUrl = (usAudioUrl != null && usAudioUrl.startsWith("/media/"))
+                ? OXFORD_BASE_URL + usAudioUrl
+                : usAudioUrl;
+
+        return new DictionaryRecordDto(
+                this.id,
+                this.word,
+                this.level,
+                this.translation,
+                fullAudioUrl,
+                this.pos,
+                this.learned
+        );
     }
 
     public DictionaryRecord(OxfordWordDto dto) {

@@ -23,6 +23,16 @@ public class DictionaryController {
 
     private final DictionaryService dictionaryService;
 
+    @GetMapping("/search")
+    public Page<DictionaryRecordDto> searchRecordsByWord(
+            @RequestParam String word,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return dictionaryService.searchRecordsByWord(word, pageable);
+    }
+
     @GetMapping("/page")
     public Page<DictionaryRecordDto> getRecordsPage(
             @RequestParam(defaultValue = "0") int page,

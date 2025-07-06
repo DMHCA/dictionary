@@ -4,6 +4,7 @@ import com.romantrippel.dictionary.dto.DictionaryRecordDto;
 import com.romantrippel.dictionary.entity.DictionaryRecord;
 import com.romantrippel.dictionary.repositories.DictionaryRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,12 +12,14 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class DictionaryService {
 
     private final DictionaryRepository dictionaryRepository;
 
-    public DictionaryService(DictionaryRepository dictionaryRepository) {
-        this.dictionaryRepository = dictionaryRepository;
+    public Page<DictionaryRecordDto> searchRecordsByWord(String word, Pageable pageable) {
+        return dictionaryRepository.searchByWord(word, pageable)
+                .map(DictionaryRecord::toDto);
     }
 
     public DictionaryRecordDto findRecordByWord(String word) {
