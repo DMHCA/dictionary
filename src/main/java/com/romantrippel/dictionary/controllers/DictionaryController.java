@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,19 @@ import org.springframework.web.bind.annotation.*;
 public class DictionaryController {
 
     private final DictionaryService dictionaryService;
+
+    @PatchMapping("/{id}/learned")
+    public ResponseEntity<Void> updateLearnedStatus(
+            @PathVariable Long id,
+            @RequestParam boolean learned
+    ) {
+        boolean updated = dictionaryService.updateLearnedStatus(id, learned);
+        if (updated) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @GetMapping("/page")
     public Page<DictionaryRecordDto> getAllRecords(

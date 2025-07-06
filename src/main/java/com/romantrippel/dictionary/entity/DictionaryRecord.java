@@ -31,7 +31,7 @@ public class DictionaryRecord {
 
     private String pos;
 
-    private boolean learned = false;
+    private boolean learned;
 
     private static final String OXFORD_BASE_URL = "https://www.oxfordlearnersdictionaries.com";
 
