@@ -27,13 +27,12 @@ public class OxfordHtmlParser {
             logger.info("Connecting to Oxford wordlist page: {}", URL);
 
             Document doc = Jsoup.connect(URL)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-                            "(KHTML, like Gecko) Chrome/115.0 Safari/537.36")
-                    .timeout(10_000)
-                    .followRedirects(true)
+                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0 Safari/537.36")
+                    .timeout(30_000)
+                    .maxBodySize(0)
                     .get();
 
-            Elements items = doc.select("ul.top-g > li");
+            Elements items = doc.select("li[data-hw]");
 
             logger.info("Found {} words on page", items.size());
 
